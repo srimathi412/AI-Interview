@@ -19,10 +19,19 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 
+// Trust proxy for production environment behind reverse proxies like Render
+app.set('trust proxy', 1);
+
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+
+// Normalize CORS origin to handle trailing slashes robustly in production
+const allowedOrigin = process.env.CLIENT_URL 
+  ? process.env.CLIENT_URL.replace(/\/$/, "") 
+  : 'http://localhost:5173';
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: allowedOrigin,
     credentials: true,
   })
 );
@@ -30,6 +39,16 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api', apiLimiter);
+
+// Root route to handle standard homepage requests and prevent "Cannot GET /"
+app.get('/', (req, res) => {
+  res.json({ message: 'InterviewAce AI API is running' });
+});
+
+// Production health endpoint for deployment services (e.g., Render)
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'InterviewAce AI API is running' });
