@@ -2,6 +2,8 @@
 
 **Practice Smarter. Crack Interviews Faster.**
 
+**Live Demo**: [https://ai-interview-omega-three.vercel.app](https://ai-interview-omega-three.vercel.app)
+
 InterviewAce AI is a production-ready MERN stack application that helps students and job seekers prepare for technical and HR interviews using AI-powered mock interviews, resume analysis, voice practice, and comprehensive analytics.
 
 ![Tech Stack](https://img.shields.io/badge/Stack-MERN-6366F1)
